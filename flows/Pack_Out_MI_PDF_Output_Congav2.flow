@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>MI_OTC_Drug_Conga</name>
+        <label>MI - OTC-Drug Conga</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>c:navigateEverywhereLFA</actionName>
+        <actionType>component</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>destinationType</name>
+            <value>
+                <stringValue>url</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>destinationUrl</name>
+            <value>
+                <elementReference>MIOTCDrugConga</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>c:navigateEverywhereLFA</nameSegment>
+        <offset>0</offset>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
+        <name>MI_Template_Cosmetic_Disinfectant_General_Purpose_Surface_Cleaning</name>
+        <label>MI Template - Cosmetic-Disinfectant-General Purpose Surface Cleaning</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>c:navigateEverywhereLFA</actionName>
+        <actionType>component</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>destinationType</name>
+            <value>
+                <stringValue>url</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>destinationUrl</name>
+            <value>
+                <elementReference>PackoutMICongaTemplateforCosmeticDisinfectantSurface</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>c:navigateEverywhereLFA</nameSegment>
+        <offset>0</offset>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customProperties>
+        <name>ScreenProgressIndicator</name>
+        <value>
+            <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
+        </value>
+    </customProperties>
+    <decisions>
+        <name>Conga_Output</name>
+        <label>Conga Output</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Outcome_1_of_Conga_Output</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Pack_Out.SR_Regulated_Category__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>DrugOTC/Drug (FDA)</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>MI_OTC_Drug_Conga</targetReference>
+            </connector>
+            <label>OTC/Drug (FDA)</label>
+        </rules>
+        <rules>
+            <name>Cosmetic_Disinfectant_Surface</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Pack_Out.SR_Regulated_Category__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Pack_Out.SR_Regulated_Category__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>DrugOTC/Drug (FDA)</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>MI_Template_Cosmetic_Disinfectant_General_Purpose_Surface_Cleaning</targetReference>
+            </connector>
+            <label>Cosmetic/Disinfectant/Surface</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>ItemNameRemoveSpecialCharacter</name>
+        <dataType>String</dataType>
+        <expression>SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE(SUBSTITUTE ({!Pack_Out.Name}, &quot;:&quot;, &quot;&quot;), &quot;#&quot;, &quot;&quot;), &quot;(&quot;, &quot;&quot;), &quot;)&quot;, &quot;&quot;), &apos;&quot;&apos;, &quot;&quot;), &quot;%&quot;,&quot;&quot;),  &quot;\\&quot;,&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>MIOTCDrugConga</name>
+        <dataType>String</dataType>
+        <expression>&quot;/apex/APXTConga4__Conga_Composer?SolMgr=1&amp;serverUrl=&quot;
+&amp; {!$Api.Partner_Server_URL_370}
+&amp; &quot;&amp;Id=&quot; &amp; {!Pack_Out.Id}
+&amp; &quot;&amp;QueryId=[PackSubFlex]0Q_137MAF834055,[FPCustomer]0Q_019MAW179454,[Image3DRendering]0Q_144MAF761805,[FGoodConnePallet]0Q_203MAF183602,[ImagePPattern]0Q_145MAF190227,[CaseLabelPlacement]&quot;
+&amp; {!Get_SOQL_Sub_Assembly_Case.APXTConga4__Key__c}
+&amp; &quot;,[PalletLabelPlacement]&quot;
+&amp; {!Get_SOQL_Sub_Assembly_Pallet.APXTConga4__Key__c}
+&amp; &quot;&amp;TemplateId=0T_029MAF676076&quot;
+&amp; &quot;&amp;OFN=MI - &quot; &amp; {!ItemNameRemoveSpecialCharacter}
+&amp; &quot;&amp;FP0=1&amp;DS7=13&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>PackoutMICongaTemplateforCosmeticDisinfectantSurface</name>
+        <dataType>String</dataType>
+        <expression>&quot;/apex/APXTConga4__Conga_Composer?SolMgr=1&amp;serverUrl=&quot;
+&amp; {!$Api.Partner_Server_URL_370}
+&amp; &quot;&amp;Id=&quot; &amp; {!Pack_Out.Id}
+&amp; &quot;&amp;QueryId=[PackSubFlex]0Q_137MAF834055,[FPCustomer]0Q_019MAW179454,[Image3DRendering]0Q_144MAF761805,[FGoodConnePallet]0Q_203MAF183602,[ImagePPattern]0Q_145MAF190227,[CaseLabelPlacement]&quot;
+&amp; {!Get_SOQL_Sub_Assembly_Case.APXTConga4__Key__c}
+&amp; &quot;,[PalletLabelPlacement]&quot;
+&amp; {!Get_SOQL_Sub_Assembly_Pallet.APXTConga4__Key__c}
+&amp; &quot;&amp;TemplateId=0T_028MAF859077&quot;
+&amp; &quot;&amp;OFN=MI - &quot; &amp; {!ItemNameRemoveSpecialCharacter}
+&amp; &quot;&amp;FP0=1&amp;DS7=13&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>PalletPlacardPlacement</name>
+        <dataType>String</dataType>
+        <expression>&quot;SELECT Id, Name, SR_Utilization__c, &quot; &amp;
+&quot;       specright__Specification__c, &quot; &amp;
+&quot;       specright__Specification__r.Name, &quot; &amp;
+&quot;       specright__Specification__r.specright__Description2__c, &quot; &amp;
+&quot;       specright__Specification__r.RecordType.DeveloperName, &quot; &amp;
+&quot;       specright__Specification__r.SR_Label_Type__c, &quot; &amp;
+&quot;       specright__Quantity__c, &quot; &amp;
+&quot;       specright__Finished_Good__c &quot; &amp;
+&quot;FROM specright__Finished_Good_Connection__c &quot; &amp;
+&quot;WHERE specright__Finished_Good__c IN (&apos;&quot; &amp; 
+{!Pack_Out.Id} &amp; 
+&quot;&apos;,&apos;&quot; &amp; 
+{!Pack_Out.SR_Sub_Assembly__c} &amp; 
+&quot;&apos;) &quot; &amp;
+&quot;AND specright__Specification__r.RecordType.DeveloperName = &apos;Label&apos; &quot; &amp;
+&quot;AND specright__Specification__r.SR_Label_Type__c = &apos;Pallet&apos; &quot; &amp;
+&quot;ORDER BY CreatedDate DESC &quot; &amp;
+&quot;LIMIT 1&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>varCongaSOQL</name>
+        <dataType>String</dataType>
+        <expression>&quot;SELECT Id, Name, SR_Utilization__c, &quot; &amp;
+&quot;       specright__Specification__c, &quot; &amp;
+&quot;       specright__Specification__r.Name, &quot; &amp;
+&quot;       specright__Specification__r.specright__Description2__c, &quot; &amp;
+&quot;       specright__Specification__r.RecordType.DeveloperName, &quot; &amp;
+&quot;       specright__Specification__r.SR_Label_Type__c, &quot; &amp;
+&quot;       specright__Quantity__c, &quot; &amp;
+&quot;       specright__Finished_Good__c &quot; &amp;
+&quot;FROM specright__Finished_Good_Connection__c &quot; &amp;
+&quot;WHERE specright__Finished_Good__c IN (&apos;&quot; &amp; 
+{!Pack_Out.Id} &amp; 
+&quot;&apos;,&apos;&quot; &amp; 
+{!Pack_Out.SR_Sub_Assembly__c} &amp; 
+&quot;&apos;) &quot; &amp;
+&quot;AND specright__Specification__r.RecordType.DeveloperName = &apos;Label&apos; &quot; &amp;
+&quot;AND specright__Specification__r.SR_Label_Type__c = &apos;Case&apos; &quot; &amp;
+&quot;ORDER BY CreatedDate DESC &quot; &amp;
+&quot;LIMIT 1&quot;</expression>
+    </formulas>
+    <interviewLabel>Pack Out - MI PDF Output Conga {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Pack Out - MI PDF Output Conga</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_Conga_Query_Case</name>
+        <label>Create Conga Query - Case</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Conga_Query_Pallet</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>APXTConga4__Description__c</field>
+            <value>
+                <elementReference>CongaQueryDescription</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>APXTConga4__Name__c</field>
+            <value>
+                <stringValue>CaseLabelPlacement</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>APXTConga4__Query__c</field>
+            <value>
+                <elementReference>varCongaSOQL</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Sub_Assembly__c</field>
+            <value>
+                <elementReference>Pack_Out.SR_Sub_Assembly__c</elementReference>
+            </value>
+        </inputAssignments>
+        <object>APXTConga4__Conga_Merge_Query__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Conga_Query_Pallet</name>
+        <label>Create Conga Query - Pallet</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_SOQL_Sub_Assembly_Case</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>APXTConga4__Description__c</field>
+            <value>
+                <elementReference>CongaQueryDescription</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>APXTConga4__Name__c</field>
+            <value>
+                <stringValue>PalletLabelPlacement</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>APXTConga4__Query__c</field>
+            <value>
+                <elementReference>PalletPlacardPlacement</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Sub_Assembly__c</field>
+            <value>
+                <elementReference>Pack_Out.SR_Sub_Assembly__c</elementReference>
+            </value>
+        </inputAssignments>
+        <object>APXTConga4__Conga_Merge_Query__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_SOQL_Sub_Assembly_Case</name>
+        <label>Get SOQL Sub Assembly - Case</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_SOQL_Sub_Assembly_Pallet</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Create_Conga_Query_Case</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>APXTConga4__Conga_Merge_Query__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_SOQL_Sub_Assembly_Pallet</name>
+        <label>Get SOQL Sub Assembly - Pallet</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Conga_Output</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Create_Conga_Query_Pallet</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>APXTConga4__Conga_Merge_Query__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Pack_Out</name>
+        <label>Pack Out</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Create_Conga_Query_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>specright__Spec_Family__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Pack_Out</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>CongaQueryDescription</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Number of Labels: Utilization (Sub Assembly – Packaging BOM – Label Component – Label Type – Case) OR (Packout – Packaging BOM – Label Component – Label Type – Case)</text>
+    </textTemplates>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

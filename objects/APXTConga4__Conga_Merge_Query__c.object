@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SR_Spec_Family__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <label>Spec Family</label>
+        <referenceTo>specright__Spec_Family__c</referenceTo>
+        <relationshipLabel>Conga Queries</relationshipLabel>
+        <relationshipName>Conga_Queries</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Assembly__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <label>Sub Assembly</label>
+        <referenceTo>specright__Spec_Family__c</referenceTo>
+        <relationshipLabel>Conga Queries (Sub Assembly)</relationshipLabel>
+        <relationshipName>Conga_Queries1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+</CustomObject>

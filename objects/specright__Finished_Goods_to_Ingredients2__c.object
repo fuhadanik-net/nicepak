@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SR_Raw_Material_Record_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>specright__Ingredient__r.RecordType.DeveloperName</formula>
+        <label>Raw Material Record Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SR_Utilization_Stack_Maximum__c</fullName>
+        <label>Utilization/Stack Maximum</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>SR_Utilization_Stack_Minimum__c</fullName>
+        <label>Utilization/Stack Minimum</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>SR_Utilization_Stack__c</fullName>
+        <description>( specright__Finished_Good__r.SR_Stack_Count_sheets__c * specright__Finished_Good__r.SR_Sheet_Cut_Off_in__c * specright__Ingredient__r.SR_Roll_Width_in__c ) * 0.000771605</description>
+        <externalId>false</externalId>
+        <formula>IF(
+    OR(
+        ISBLANK(specright__Finished_Good__r.SR_Stack_Count_sheets__c),
+        ISBLANK(specright__Finished_Good__r.SR_Sheet_Cut_Off_in__c),
+        ISBLANK(specright__Ingredient__r.SR_Roll_Width_in__c)
+    ),
+    NULL,
+    ( specright__Finished_Good__r.SR_Stack_Count_sheets__c *
+      specright__Finished_Good__r.SR_Sheet_Cut_Off_in__c *
+      specright__Ingredient__r.SR_Roll_Width_in__c
+    ) * 0.000771605
+)</formula>
+        <label>Utilization/Stack</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SR_Utilization_UoM_Formula__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+   specright__Ingredient__r.RecordType.DeveloperName = &quot;Non_Woven&quot;,
+   &quot;yd2&quot;,
+   IF(
+      specright__Ingredient__r.RecordType.DeveloperName = &quot;Chemical&quot;,
+      &quot;%&quot;,
+      NULL
+   )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Utilization UoM</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <validationRules>
+        <fullName>Block_Utilization_Min_Max_Unless_Chemica</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+  specright__Ingredient__r.RecordType.DeveloperName &lt;&gt; &quot;Chemical&quot;,
+  OR(
+    NOT(ISBLANK(SR_Utilization_Stack_Minimum__c)),
+    NOT(ISBLANK(SR_Utilization_Stack_Maximum__c))
+  )
+)</errorConditionFormula>
+        <errorMessage>Utilization Min/Max must be blank unless the Raw Material type is Chemical</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Require_Utilization_Min_Max_For_Chemical</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+  specright__Ingredient__r.RecordType.DeveloperName = &quot;Chemical&quot;,
+  OR(
+    ISBLANK(SR_Utilization_Stack_Minimum__c),
+    ISBLANK(SR_Utilization_Stack_Maximum__c)
+  )
+)</errorConditionFormula>
+        <errorMessage>For Chemical raw materials, Utilization Min and Max are required.</errorMessage>
+    </validationRules>
+</CustomObject>
